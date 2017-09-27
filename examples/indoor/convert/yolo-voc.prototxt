@@ -1,4 +1,4 @@
-# Yolov2 Trained on COCO Dataset
+# Yolov2 For VOC
 name: "YOLONET"
 layer {
   name: "data"
@@ -170,7 +170,7 @@ layer{
   convolution_param {
     num_output: 64
     kernel_size: 1
-pad: 0
+    pad: 0 #??
     stride: 1
     bias_term: false
   }
@@ -1009,15 +1009,33 @@ layer {
 }
 
 layer {
-name: "conv21"
-type: "Convolution"
-bottom: "concat1"
-top: "conv21"
-convolution_param {
-num_output: 64
-kernel_size: 1
-stride: 1
-pad: 0
+  name: "reorg1"
+  type: "Reorg"
+  bottom: "concat1"
+  top: "reorg1"
+  reorg_param {
+    stride: 2
+  }
+}
+
+layer {
+  name: "concat2"
+  type: "Concat"
+  bottom: "reorg1"
+  bottom: "scale20"
+  top: "concat2"
+}
+
+layer{
+  name: "conv21"
+  type: "Convolution"
+  bottom: "concat2"
+  top: "conv21"
+  convolution_param {
+    num_output: 1024
+    kernel_size: 3
+    pad: 1
+    stride: 1
     bias_term: false
   }
 }
@@ -1037,96 +1055,47 @@ layer {
   }
 }
 layer {
-name: "reorg1"
-type: "Reorg"
-bottom: "bn21"
-top: "reorg1"
-reorg_param {
-stride: 2
-}
-}
-layer {
-name: "concat2"
-type: "Concat"
-bottom: "reorg1"
-bottom: "scale20"
-top: "concat2"
-}
-layer{
-name: "conv22"
-type: "Convolution"
-bottom: "concat2"
-top: "conv22"
-convolution_param {
-num_output: 1024
-kernel_size: 3
-pad: 1
-stride: 1
-bias_term: false
-}
+  name: "scale21"
+  type: "Scale"
+  bottom: "bn21"
+  top: "scale21"
+  scale_param {
+    bias_term: true
+  }
 }
 layer {
-name: "bn22"
-type: "BatchNorm"
-bottom: "conv22"
-top: "bn22"
-param {
-lr_mult: 0
-}
-param {
-lr_mult: 0
-}
-param {
-lr_mult: 0
-}
-}
-layer {
-name: "scale22"
-type: "Scale"
-bottom: "bn22"
-top: "scale22"
-scale_param {
-bias_term: true
-}
-}
-layer {
-name: "relu22"
-type: "ReLU"
-bottom: "scale22"
-top: "scale22"
-relu_param{
-negative_slope: 0.1
-}
+  name: "relu21"
+  type: "ReLU"
+  bottom: "scale21"
+  top: "scale21"
+  relu_param{
+    negative_slope: 0.1
+  }		
 }
 
 layer {
-name: "conv23"
-type: "Convolution"
-bottom: "scale22"
-top: "conv23"
-convolution_param {
-num_output: 425
-kernel_size: 1
-stride: 1
-pad: 0
-}
-}
-layer {
-name: "relu23"
-type: "ReLU"
-bottom: "conv23"
-top: "conv23"
+  name: "conv22"
+  type: "Convolution"
+  bottom: "scale21"
+  top: "conv22"
+  convolution_param {
+    num_output: 125
+    kernel_size: 1
+    pad: 0
+    stride: 1
+  }
 }
 layer {
-name: "region1"
-type: "RegionLoss"
-bottom: "conv23"
-bottom: "label"
-top: "region1"
-region_loss_param {
-side: 13
-num_class: 80
-coords: 4
-num: 5
+  name: "region1"
+  type: "RegionLoss"
+  bottom: "conv22"
+  bottom: "label"
+  top: "region1"
+  region_loss_param {
+    side: 13
+    num_class: 20
+    coords: 4
+    num: 5
+  }
 }
-}
+#http://ethereon.github.io/netscope/#/gist/9640ecb59a75f230446e7c70d2f8bcf3
