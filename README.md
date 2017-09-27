@@ -33,7 +33,7 @@
 1. convert yolo.cfg to yolo.prototxt
 2. convert yolo weights to caffemodel
 
-`python convert_weights_to_caffemodel.py --prototxt yolo.prototxt --weights yolo.weights --caffemodel yolo.caffemodel`
+`python3 convert_weights_to_caffemodel.py --prototxt yolo.prototxt --weights yolo.weights --caffemodel yolo.caffemodel`
 
 ## Windows Installation
 ### Prerequisites
