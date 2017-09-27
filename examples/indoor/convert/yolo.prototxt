@@ -1,3 +1,4 @@
+# Yolov2 For VOC
 name: "YOLONET"
 layer {
   name: "data"
@@ -1078,7 +1079,7 @@ layer {
   bottom: "scale21"
   top: "conv22"
   convolution_param {
-    num_output: 425
+    num_output: 125
     kernel_size: 1
     pad: 0
     stride: 1
@@ -1092,7 +1093,7 @@ layer {
   top: "region1"
   region_loss_param {
     side: 13
-    num_class: 80
+    num_class: 20
     coords: 4
     num: 5
   }
