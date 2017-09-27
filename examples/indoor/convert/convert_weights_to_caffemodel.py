@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
 import caffe
 import numpy as np
+import argparse
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Convert a pretrained darknet model to caffe', 
+                                 usage='python3 convert_weights_to_caffemodel.py\
+                                 --prototxt model.prototxt\
+                                 --weights model.weights\
+                                 --caffemodel model.caffemodel')
+parser.add_argument('--prototxt'  , default=None)
+parser.add_argument('--weights'   , default=None)
+parser.add_argument('--caffemodel', default='out.caffemodel')
+args = parser.parse_args()
+if args.prototxt is None:
+    print ('Prototxt is missing')
+    exit(1)
+if args.weights is None:
+    print ('Weights file is missing')
+    exit(1)
+
+model_filename = args.prototxt
+yoloweight_filename = args.weights
+caffemodel_filename = args.caffemodel
 
 #caffe.set_device(0)  # if we have multiple GPUs, pick the first one
 caffe.set_mode_cpu()
-model_filename = 'yolo.prototxt'
-yoloweight_filename = 'yolo-voc.weights'
-caffemodel_filename = 'yolo.caffemodel'
 print ('model file is ', model_filename)
 print ('weight file is ', yoloweight_filename)
 print ('output caffemodel file is ', caffemodel_filename)
